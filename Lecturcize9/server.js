@@ -2,11 +2,10 @@ const express = require('express');
 const app = express();
 
 // install session module first using 'npm install express-session'
-var session = require('express-session'); 
+let session = require('express-session'); 
 app.use(session({ secret: 'happy jungle', 
                   resave: false, 
-                  saveUninitialized: 
-                  false, 
+                  saveUninitialized: false, 
                   cookie: { maxAge: 60000 }}))
                   
 app.get('/introduce', introduce);

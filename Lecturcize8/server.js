@@ -3,7 +3,7 @@ const app = express();
 
 app.get('/add', add);
 app.get('/sub', subtract);
-app.listen(process.env.PORT,  process.env.IP, startHandler())
+app.listen(process.env.PORT,  process.env.IP, startHandler)
 
 function startHandler()
 {

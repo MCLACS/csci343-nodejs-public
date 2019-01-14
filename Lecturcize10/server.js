@@ -5,8 +5,7 @@ const app = express();
 var session = require('express-session'); 
 app.use(session({ secret: 'happy jungle', 
                   resave: false, 
-                  saveUninitialized: 
-                  false, 
+                  saveUninitialized: false, 
                   cookie: { maxAge: 60000 }}))
 
 app.get('/', instructions);                  
@@ -23,31 +22,34 @@ function game(req, res)
   let result = {};
   try
   {
-    console.log(req.session);
+    // if we have not picked a secret number, restart the game...
     if (req.session.answer == undefined)
     {
       req.session.guesses = 0;
       req.session.answer = Math.floor(Math.random() * 100) + 1;
     }
       
-    // if a guess is given, see if they are right...
+    // if a guess was not made, restart the game...
     if (req.query.guess == undefined)
     {
       result = {'gameStatus' : 'Pick a number from 1 to 100.'}; 
       req.session.guesses = 0;
       req.session.answer = Math.floor(Math.random() * 100) + 1;
     }
+    // a guess was made, check to see if it is correct...
     else if (req.query.guess == req.session.answer)
     {
       req.session.guesses = req.session.guesses + 1;
       result = {'gameStatus' : `Correct! It took you ${req.session.guesses} guesses. Play Again!`}; 
       req.session.answer = undefined;
     }
+    // a guess was made, check to see if too high...
     else if (req.query.guess > req.session.answer)
     {
       req.session.guesses = req.session.guesses + 1;
       result = {'gameStatus' : 'To High. Guess Again!', 'guesses' : req.session.guesses}; 
     }
+    // a guess was made, it must be too low...
     else
     {
       req.session.guesses = req.session.guesses + 1;
