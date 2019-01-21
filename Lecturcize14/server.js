@@ -61,7 +61,10 @@ function register(req, res)
       writeResult(req, res, {'error' : err});
     else
     {
-      let hash = bcrypt.hashSync(req.query.password, 10);
+      // bcrypt uses random salt is effective for fighting
+      // rainbow tables, and the cost factor slows down the
+      // algorithm which neutralizes brute force attacks ...
+      let hash = bcrypt.hashSync(req.query.password, 12);
       con.query("INSERT INTO USER (USER_EMAIL, USER_PASS) VALUES (?, ?)", [req.query.email, hash], function (err, result, fields) 
       {
         if (err) 
@@ -119,7 +122,7 @@ function login(req, res)
           if(result.length == 1 && bcrypt.compareSync(req.query.password, result[0].USER_PASS))
           {
             req.session.user = {'result' : {'id': result[0].USER_ID, 'email': result[0].USER_EMAIL}};
-            whoIsLoggedIn(req, res);
+            writeResult(req, res, req.session.user);
           }
           else 
           {
