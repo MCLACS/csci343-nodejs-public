@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            /* put your css styles here...*/
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            
+            <h4>Fun Form</h4>
+            <form class="border border-primary p-3">
+                <div class="form-group">
+                    <label for="num1">Number 1</label>
+                    <input type="number" class="form-control" id="num1" aria-describedby="emailHelp" placeholder="Enter a number">
+                </div>
+                <div class="form-group">
+                    <label for="num2">Number 2</label>
+                    <input type="number" class="form-control" id="num2" placeholder="Enter a number">
+                </div>
+                <button id='btnSubmit' type="button" class="btn btn-primary float-right">Add</button>
+                <div class="clearfix"></div>
+            </form>  
+            
+            <div id='ansCard' class="card" style='display: none'>
+                <div class="card-body">
+                    <h5 class="card-title">Answer</h5>
+                    <p id='ans'></p>
+                </div>
+            </div>                
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        
+        <script>
+        /* global $ */
+        // put your JavaScript code here...
+        $(document).ready(function() 
+        {
+            $('#btnSubmit').click(function() 
+            {
+                let num1 = parseInt($('#num1').val(), 10);
+                let num2 = parseInt($('#num2').val(), 10);
+                
+                if (isNaN(num1) || isNaN(num2))
+                {
+                    $('#ans').text("Error: please enter a number!"); 
+                    $('#ans').addClass("text-danger");
+                }
+                else
+                {
+                    $('#ans').text(num1 + num2);
+                    $('#ans').removeClass("text-danger");
+                }
+                $('#ansCard').fadeIn(2000);
+            });
+            
+        });
+        
+        </script>
+    </body>
+
+</html>
