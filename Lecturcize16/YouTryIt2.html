@@ -4,32 +4,26 @@
         
         <style>
             /* put your css styles here...*/
+            
         </style>
     </head>
     
     <body>
         <div class="container">
-            
-            <h4>Fun Form</h4>
+            <!--put your html code here...-->
             <form class="border border-primary p-3">
                 <div class="form-group">
-                    <label for="num1">Number 1</label>
-                    <input type="number" class="form-control" id="num1" name="num1" placeholder="Enter a number">
+                    <label for="text">Text</label>
+                    <input type="text" class="form-control" id="text" name="text" placeholder="Enter some text">
                 </div>
-                <div class="form-group">
-                    <label for="num2">Number 2</label>
-                    <input type="number" class="form-control" id="num2" name="num2" placeholder="Enter a number">
-                </div>
-                <button id='btnSubmit' type="button" class="btn btn-primary float-right">Add</button>
+                <button id='btnAdd' type="button" class="btn btn-primary float-right">Add</button>
                 <div class="clearfix"></div>
             </form>  
+        
+            <ul id='list' class="list-group">
+            </ul>            
             
-            <div id='ansCard' class="card" style='display: none'>
-                <div class="card-body">
-                    <h5 class="card-title">Answer</h5>
-                    <p id='ans'></p>
-                </div>
-            </div>                
+            <button id='btnClear' type="button" class="btn btn-primary float-right">Clear</button>
         </div>
         
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -43,26 +37,18 @@
         // put your JavaScript code here...
         $(document).ready(function() 
         {
-            $('#btnSubmit').click(function() 
+            $('#btnAdd').click(function() 
             {
-                let num1 = parseInt($('#num1').val(), 10);
-                let num2 = parseInt($('#num2').val(), 10);
-                
-                if (isNaN(num1) || isNaN(num2))
-                {
-                    $('#ans').text("Error: please enter a number!"); 
-                    $('#ans').addClass("text-danger");
-                }
-                else
-                {
-                    $('#ans').text(num1 + num2);
-                    $('#ans').removeClass("text-danger");
-                }
-                $('#ansCard').fadeIn(2000);
+                let str = "<li class='list-group-item'>"+$('#text').val()+"</li>";
+                $('#list').append(str);
             });
             
+            $('#btnClear').click(function() 
+            {
+                $('#list').empty();
+            });
         });
-        
         </script>
     </body>
+
 </html>

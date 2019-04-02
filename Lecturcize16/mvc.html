@@ -1,0 +1,161 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            .error
+            {
+                border: 1px red solid;
+            }
+            
+            .selected
+            {
+                color: blue;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            
+            <!--form...-->
+            <h4>Class Roster</h4>
+            <form class="border border-primary p-3">
+                <div class="form-group">
+                    <label for="firstName">Name</label>
+                    <input type="text" class="form-control studentData" id="firstName" name="firstName" placeholder="first name">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Name</label>
+                    <input type="text" class="form-control studentData" id="lastName" name="lastName" placeholder="last name">
+                </div>
+                <button id='btnSubmit' type="button" class="btn btn-primary float-right">Add</button>
+                <div class="clearfix"></div>
+            </form>  
+            
+            <!--list group-->
+            <div class='p-2 bg-dark'>
+                <h5 class='text-light'>Student List</h5>
+                <ul id='studentList' class="list-group">
+                </ul>            
+                <button id='btnDelete' type="button" class="btn btn-primary float-right">Delete</button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        <div id='confirm' class="modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-dark text-light">
+                <h5 class="modal-title">Are You Sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to delete this student?</p>
+              </div>
+              <div class="modal-footer">
+                <button id='yes' type="button" class="btn btn-primary">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>                
+        
+        <script>
+        /* global $ */
+        $(document).ready(function() 
+        {
+            // model ....
+            let model = {};
+
+            function initializeModel()
+            {
+                model.count = 0;
+                model.selected = -1;
+                model.students = [];
+            }
+            
+            // view...
+            function updateView()
+            {
+                $('#studentList').empty();                
+                for (var i in model.students) 
+                {
+                    let item = $("<li></li>");
+                    item.attr("id", model.students[i].id);
+                    item.addClass("list-group-item");
+                    item.addClass("student");
+                    item.text(model.students[i].ln+", "+model.students[i].fn);
+                    $('#studentList').append(item);
+                }
+                $("li[id='"+model.selected+"']").addClass("selected");
+            }            
+            
+            // controller ...
+            $('#btnSubmit').click(function() 
+            {
+                $('.studentData').removeClass("error");
+                
+                let first = $('#firstName').val().trim();
+                let last = $('#lastName').val().trim();
+                
+                if (first == "")
+                {
+                    $('#firstName').addClass("error");
+                }
+                else if (last == "")
+                {
+                    $('#lastName').addClass("error");
+                }
+                else
+                {
+                    model.students.push({ id: model.count, ln: last, fn: first });
+                    model.count = model.count+1;
+                }
+                updateView();
+            });
+            
+            $(document).on("click",".student",function() 
+            {
+                model.selected = $(this).attr("id");
+                updateView();
+            });
+            
+            $('#btnDelete').click(function() 
+            {
+                if (model.selected > -1)
+                {
+                    $('#confirm').modal('show');
+                }
+            });
+
+            $('#yes').click(function() 
+            {
+                for (var i in model.students)
+                {
+                    if (model.students[i].id == model.selected)
+                    {
+                        model.students.splice(i, 1);
+                        model.selected = -1;
+                        break;
+                    }
+                }
+                $('#confirm').modal('hide');
+                updateView();
+            });
+            
+            // run...
+            initializeModel();
+            updateView();
+        });
+        
+        </script>
+    </body>
+</html>
