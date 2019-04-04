@@ -80,6 +80,8 @@
                 model.count = 0;
                 model.selected = -1;
                 model.students = [];
+                model.fristNameError = false;
+                model.lastNameError = false;
             }
             
             // view...
@@ -96,23 +98,33 @@
                     $('#studentList').append(item);
                 }
                 $("li[id='"+model.selected+"']").addClass("selected");
+                
+                $('.studentData').removeClass("error");
+                if (model.firstNameError == true)
+                {
+                     $('#firstName').addClass("error");
+                }
+                if (model.lastNameError == true)
+                {
+                     $('#lastName').addClass("error");
+                }
             }            
             
             // controller ...
             $('#btnSubmit').click(function() 
             {
-                $('.studentData').removeClass("error");
-                
                 let first = $('#firstName').val().trim();
                 let last = $('#lastName').val().trim();
                 
+                model.firstNameError = false;
+                model.lastNameError = false;
                 if (first == "")
                 {
-                    $('#firstName').addClass("error");
+                   model.firstNameError = true;
                 }
                 else if (last == "")
                 {
-                    $('#lastName').addClass("error");
+                   model.lastNameError = true;
                 }
                 else
                 {
