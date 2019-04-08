@@ -10,7 +10,7 @@ var session = require('express-session');
 app.use(session({ secret: 'happy jungle', 
                   resave: false, 
                   saveUninitialized: false, 
-                  cookie: { maxAge: 60000 }}));
+                  cookie: { maxAge: 600000 }}));
 
 app.get('/', serveIndex);                  
 app.get('/game', game);
@@ -48,7 +48,7 @@ function game(req, res)
       if (req.query.guess == req.session.answer)
       {
         req.session.guesses = req.session.guesses + 1;
-        result = {'gameStatus' : `Correct! It took you ${req.session.guesses} guesses. Play Again!`}; 
+        result = {'gameStatus' : 'Correct! It took you ' + req.session.guesses + ' guesses. Play Again!', 'guesses' : -1}; 
         req.session.answer = undefined;
       }
       // a guess was made, check to see if too high...

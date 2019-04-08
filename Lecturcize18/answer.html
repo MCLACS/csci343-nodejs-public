@@ -11,17 +11,18 @@
     <body>
         <div class="container">
             <!--put your html code here...-->
-            <h4>Number Guessing Game</h4>
-            <form id='gameForm' class="border border-primary p-3">
+            <h4>Simple Song DB</h4>
+            <form id='songForm' class="border border-primary p-3">
                 <div class="form-group">
-                    <label for="guess">Guess</label>
-                    <input type="number" class="form-control" id="guess" name="guess" aria-describedby="emailHelp" placeholder="Enter a number">
+                    <label for="song">Song</label>
+                    <input type="text" class="form-control" id="song" name="song" aria-describedby="" placeholder="Enter a song">
                 </div>
-                <button id='btnSubmit' type="button" class="btn btn-primary float-right">Guess</button>
+                <button id='btnSubmit' type="button" class="btn btn-primary float-right">Add</button>
                 <div class="clearfix"></div>
             </form>             
         
-            <p id='response'></p>    
+            <ul id='songs' class='list-group'></ul>    
+            <p id="error"></p>
         </div>
         
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -41,8 +42,7 @@
             function initializeModel()
             {
                 model.error = "";
-                model.gameStatus = "";
-                model.guesses = -1;
+                model.result = [];
             }
             
             // view...
@@ -50,37 +50,40 @@
             {
                 if (model.error != "")
                 {
-                    
-                    $("#response").text(model.error);
+                    $("#error").text(model.error);
                 }
                 else
                 {
-                    let txt = model.gameStatus;
-                    if (model.guesses == 1)
-                        txt = txt + " You have made one guess.";
-                    else if (model.guesses > 1)
-                        txt = txt + " You have made " + model.guesses + " guesses.";                    
-                    $("#response").text(txt);
+                    $("#songs").empty();
+                    for (var i in model.result)
+                    {
+                        let item = $("<li class='list-group-item'></li>");
+                        item.text(model.result[i].SONG_NAME);
+                        $("#songs").append(item);
+                    }
                 }
-                
             }
             
             // controller...
             $('#btnSubmit').click(function() 
             {
-                let url = 'game?guess='+$('#guess').val();
+                let url = 'afdsfsdd?song='+$('#song').val();
+                sendRequest(url);
+            });
+
+            function sendRequest(url)
+            {
                 var jqxhr = $.get(url);
                 jqxhr.done(function(json) 
                 {
-                    model.gameStatus = "";
+                    model.result = [];
                     if (json.error !== undefined)
                     {
                         model.error = json.error;
                     }
                     else
                     {
-                        model.gameStatus = json.gameStatus;
-                        model.guesses = json.guesses;
+                        model.result = json.result;
                     }
                     updateView();
                 })
@@ -90,11 +93,12 @@
                     model.error = error;
                     updateView();
                 })
-            });
+            }
             
             // run...
             initializeModel();
-            updateView();
+            let url = 'list';
+            sendRequest(url);
         });        
             
         </script>
