@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            /* put your css styles here...*/
+            .square
+            {
+                height: 100px;
+                border: 1px solid red;
+                text-align: center;
+                vertical-align: middle;
+                line-height: 100px; 
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            
+            <div id='board' class='row'>
+                
+            </div>
+               
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        
+        <script>
+        /* global $ */
+        // put your JavaScript code here...
+        $(document).ready(function() 
+        {
+            // model ...
+            let model = {};
+            
+            function initializeModel()
+            {
+                model.turn = 'X';
+                model.board = 
+                        [ 
+                            [ {"ch" : "-"}, {"ch" : "-"}, {"ch" : "-"}], 
+                            [ {"ch" : "-"}, {"ch" : "-"}, {"ch" : "-"}],  
+                            [ {"ch" : "-"}, {"ch" : "-"}, {"ch" : "-"}] 
+                        ];
+                model.count = 0;
+            }
+            
+            // controller...
+            $(document).on("click",".square",function() 
+            {
+                let r = parseInt($(this).attr('r'));
+                let c = parseInt($(this).attr('c'));
+                if (model.board[r][c].ch == '-')
+                {
+                    model.count = model.count + 1;
+                    model.board[r][c].ch = model.turn;
+                    
+                    // model.turn = model.turn == 'X' ? 'O' : 'X';
+                    if (model.turn == 'X')
+                        model.turn = 'O';
+                    else
+                        model.turn = 'X';
+    
+                    updateView();
+                }
+            });
+            
+            // view...
+            function updateView()
+            {
+                $("#board").empty();
+                for (let r = 0; r < 3; r++)
+                {
+                    for (let c = 0; c < 3; c++)
+                    {
+                        let square = $("<div class='col-4 square'></div>");
+                        square.attr('r', r);
+                        square.attr('c', c);
+                        square.text(model.board[r][c].ch);
+                        $("#board").append(square);
+                    }
+                }
+                if (model.count == 9)
+                {
+                    $('#board').fadeOut(3000);
+                }
+            }
+ 
+            // run...
+            initializeModel();
+            updateView();
+        });
+        
+        </script>
+    </body>
+</html>
