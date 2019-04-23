@@ -1,0 +1,297 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            .error
+            {
+                border: 1px red solid;
+            }
+            
+            .selected
+            {
+                color: blue;
+            }
+            
+            #loginBtn, #logoutBtn, #registerBtn, #addSongBtn, #clearSongsBtn
+            {
+                display: none;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            <div>
+                <button id='loginBtn' class='btn btn-primary'>Login</button>
+                <button id='registerBtn' class='btn btn-primary'>Register</button>
+                <button id='logoutBtn' class='btn btn-primary'>Logout</button>
+                <p id="msg"></p>
+            </div>
+            <div>
+                <button id='addSongBtn' class='btn btn-primary'>Add Song</button>
+                <button id='clearSongsBtn' class='btn btn-primary'>Clear Songs</button>
+            </div>            
+            <div>
+                <ul id='songs' class='list-group'>
+                    
+                </ul>
+            </div>            
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        <div id='loginDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Login</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmLoginBtn' type="button" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>    
+        
+        <div id='registerDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Register</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="regEmail" name="regEmail" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="regPassword" name="regPassword" placeholder="Password">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmRegisterBtn' type="button" class="btn btn-primary">Register</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        
+        <div id='addSongDlg' class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">Add Song</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Add Song</h4>
+                        <form class="border border-primary p-3">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="songName" name="songName" placeholder="Song name">
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button id='confirmAddSongBtn' type="button" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>         
+        
+        <script>
+        /* global $ */
+        $(document).ready(function() 
+        {
+            // model ....
+            let model = {};
+
+            function initializeModel()
+            {
+                sendRequest("whoIsLoggedIn", function()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listSongs");    
+                });
+            }
+            
+            // view...
+            function updateView()
+            {
+                console.log(model);
+                if (model.result == undefined)
+                {
+                    $("#msg").text(model.error);
+                    
+                    $("#logoutBtn").hide();
+                    $("#loginBtn").show();
+                    $("#registerBtn").show();
+                    $("#addSongBtn").hide();
+                    $("#clearSongsBtn").hide();
+                }
+                else
+                {
+                    $("#logoutBtn").show();
+                    $("#addSongBtn").show();
+                    $("#clearSongsBtn").show();
+                    $("#loginBtn").hide();
+                    $("#registerBtn").hide();
+                    
+                    if (model.result.email == undefined)
+                    {
+                        $('#songs').empty();
+                        for (let i in model.result)
+                        {
+                            let item = $("<li class='list-group-item'></li>");
+                            item.text(model.result[i].SONG_NAME);
+                            
+                            let btn = $("<button class='deleteBtn btn btn-danger float-right'>Delete</button>");
+                            btn.attr("songName", model.result[i].SONG_NAME);
+                            item.append(btn);
+                            
+                            $("#songs").append(item);
+                        }
+                    }
+                    else
+                    {
+                        $("#msg").text("Hello " + model.result.email);
+                    }
+                }
+            }            
+            
+            // controller ...
+            function sendRequest(url, callback)
+            {
+                var jqxhr = $.get(url);
+                jqxhr.done(function(json) 
+                {
+                    model = json;
+                    updateView();
+                    if (callback !== undefined)
+                        callback();
+                })
+                jqxhr.fail(function(json) 
+                {
+                    let error = JSON.stringify(json);
+                    model.error = error;
+                    updateView();
+                })
+            }
+
+            $('#loginBtn').click(function() 
+            {
+                $('#password').val('');
+                $('#loginDlg').modal('show');
+            });
+
+            $('#registerBtn').click(function() 
+            {
+                $('#regEmail').val('');
+                $('#regPassword').val('');
+                $('#registerDlg').modal('show');
+            });
+            
+            $(document).on( "click", ".deleteBtn", function() 
+            {
+                let name = $(this).attr("songName");
+                sendRequest("removeSong?song="+name, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listSongs");    
+                });
+            });
+
+            $('#logoutBtn').click(function() 
+            {
+                sendRequest("logout", function() 
+                {
+                    if (model.error != undefined)
+                        $("#songs").empty();
+                });
+            });
+
+            $('#clearSongsBtn').click(function() 
+            {
+                sendRequest("clearSongs", function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listSongs");    
+                });
+            });
+            
+            $('#addSongBtn').click(function() 
+            {
+                $('#songName').val('');
+                $('#addSongDlg').modal('show');
+            });
+
+            $('#confirmAddSongBtn').click(function() 
+            {
+                let song = $('#songName').val().trim();
+                sendRequest("addSong?song="+song, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listSongs");    
+                });
+                $('#addSongDlg').modal('hide');                
+            });
+            
+            $('#confirmLoginBtn').click(function() 
+            {
+                let email = $('#email').val().trim();
+                let password = $('#password').val().trim();
+                
+                sendRequest("login?email="+email+"&password="+password, function ()
+                {
+                    if (model.error == undefined)
+                        sendRequest("listSongs");    
+                });
+                $('#loginDlg').modal('hide');
+            });
+
+            $('#confirmRegisterBtn').click(function() 
+            {
+                let email = $('#regEmail').val().trim();
+                let password = $('#regPassword').val().trim();
+                sendRequest("register?email="+email+"&password="+password, function () 
+                { 
+                    if (model.error == undefined)
+                        sendRequest("listSongs");
+                });
+                
+                $('#registerDlg').modal('hide');
+            });
+            
+            // run...
+            initializeModel();
+        });
+        
+        </script>
+    </body>
+</html>
