@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        
+        <style>
+            /* put your css styles here...*/
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            <p>Word: <span id='word'></span></p>
+            <input id='answer' name='answer' type='text'></input>
+            <input id='guessBtn' class='btn btn-primary' name='answer' type='button' value='Guess'></input>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>        
+        
+        <!--put your modal dialogs here...-->
+        
+        <script>
+        /* global $ */
+        // put your JavaScript code here...
+        $(document).ready(function() 
+        {
+            // model ...
+            let model = {};
+            
+            function initializeModel()
+            {
+                sendRequest('getWord');
+            }
+            
+            // controller...
+           function sendRequest(url, callback)
+            {
+                var jqxhr = $.get(url);
+                jqxhr.done(function(json) 
+                {
+                    model = json;
+                    updateView();
+                    if (callback !== undefined)
+                        callback();
+                })
+                jqxhr.fail(function(json) 
+                {
+                    let error = JSON.stringify(json);
+                    model.error = error;
+                    updateView();
+                })
+            }
+            
+            $("#guessBtn").click(function ()
+            {
+                if ($('#answer').val() === model.result[0].WORD_FULL)
+                {
+                    alert("Correct!");
+                }
+                else
+                {
+                    alert("Wrong!");
+                }
+            });
+            
+            // view...
+            function updateView()
+            {
+                //{"result":[{"WORD_ID":3,"WORD_SEQ":2,"WORD_TEMPLATE":"W__Du__i_?","WORD_FULL":"WhoDunnit?"}]}
+                $("#word").text(model.result[0].WORD_TEMPLATE);
+                
+            }
+ 
+            // run...
+            initializeModel();
+        });
+        
+        </script>
+    </body>
+</html>
